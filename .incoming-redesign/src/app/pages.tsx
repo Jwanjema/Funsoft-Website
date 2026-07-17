@@ -1,7 +1,7 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
 import {
-  Shield, Database, Users, ChevronRight, ChevronLeft,
+  Activity, Shield, Database, Users, ChevronRight, ChevronLeft,
   MapPin, Phone, Mail, Clock, CheckCircle2, Layers, Brain, BarChart3,
   Download, Target, Eye, Award, Code2, Server, GraduationCap, Microscope,
   ArrowRight, Star, Loader2, Quote,
