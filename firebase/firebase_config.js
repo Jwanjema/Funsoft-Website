@@ -5,13 +5,12 @@ import { getFirestore } from "firebase/firestore/lite";
 
 // Your web app's Firebase configuration for FUNSOFT
 const firebaseConfig = {
-  apiKey: "AIzaSyCOej-dW7WVrZTQ97ATokO5FzUCzGHSvP8",
-  authDomain: "funsoft-85c23.firebaseapp.com",
-  projectId: "funsoft-85c23",
-  storageBucket: "funsoft-85c23.firebasestorage.app",
-  messagingSenderId: "453869348301",
-  appId: "1:453869348301:web:4c74b5f8d2a4deaa719084"
-  // Note: measurementId is for Analytics only, not needed for Auth/Firestore
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCOej-dW7WVrZTQ97ATokO5FzUCzGHSvP8",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "funsoft-85c23.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "funsoft-85c23",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "funsoft-85c23.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "453869348301",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:453869348301:web:4c74b5f8d2a4deaa719084"
 };
 
 // Initialize Firebase
@@ -20,6 +19,3 @@ const app = initializeApp(firebaseConfig);
 // Initialize services
 export const authentication = getAuth(app);
 export const db = getFirestore(app);
-
-// Optional: Log which project is being used
-console.log("Firebase initialized with project:", firebaseConfig.projectId);
