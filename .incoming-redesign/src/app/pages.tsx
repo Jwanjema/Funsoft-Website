@@ -214,6 +214,25 @@ export function PageBackground({ nav }: { nav: Nav }) {
             ))}
           </div>
         </Reveal>
+        <div>
+          <h3 className="font-bold text-[16px] text-foreground mb-4">Milestones Along the Way</h3>
+          <StaggerGroup className="grid grid-cols-1 sm:grid-cols-3 gap-4" stagger={0.08}>
+            {[
+              { src: "/assets/history/minister-handover-moi-hospital.jpg", year: "2007–2011", title: "Ministry recognition", body: "Certificate of acquisition presented for Funsoft I-HMIS at Moi Teaching & Referral Hospital." },
+              { src: "/assets/history/pumwani-handover-2011.jpg", year: "2011", title: "Pumwani handover", body: "System handover ceremony with Ministry and hospital officials at Pumwani Maternity Hospital, Nairobi." },
+              { src: "/assets/history/afhad-training-sudan-2007.jpg", year: "2007", title: "Regional reach", body: "SPL staff delivering Funsoft I-HMIS training at AFHAD University for Women, Khartoum, Sudan." },
+            ].map(({ src, year, title, body }) => (
+              <StaggerItem key={src} className="bg-card rounded-xl border border-border overflow-hidden hover:border-primary/30 hover:shadow-sm transition-all">
+                <img src={src} alt={title} className="w-full aspect-[4/3] object-cover" loading="lazy" />
+                <div className="p-4">
+                  <p className="text-[10px] font-bold text-primary uppercase tracking-[0.14em] mb-1">{year}</p>
+                  <h4 className="font-bold text-[14px] text-foreground mb-1">{title}</h4>
+                  <p className="text-[12px] text-muted-foreground leading-relaxed" style={{ fontFamily: "'Inter',sans-serif" }}>{body}</p>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerGroup>
+        </div>
       </div>
     </SubPage>
   );
@@ -472,13 +491,22 @@ export function PageProductIHMIS({ nav }: { nav: Nav }) {
           operations. Trusted by Jaramogi Oginga Odinga Teaching &amp; Referral Hospital, Nanyuki Teaching and Referral Hospital,
           and Siaya County Referral Hospital, among many others.
         </p>
-        <Reveal>
-          <VideoLightbox youtubeId="_8rMMYb6XWE" thumbnailAlt="Funsoft I-HMIS system key features walkthrough" />
+        <Reveal className="bg-gradient-to-r from-primary to-[#0d3f8f] rounded-xl p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 shadow-lg shadow-primary/20">
+          <div className="flex-1 text-center sm:text-left">
+            <p className="text-white font-extrabold text-[17px] sm:text-[19px] mb-1">See Funsoft I-HMIS in action</p>
+            <p className="text-blue-100 text-[13px]" style={{ fontFamily: "'Inter',sans-serif" }}>
+              Explore the full live system yourself — no sign-up required.
+            </p>
+          </div>
+          <a href="https://funsoft.systempartners.biz/funsofthmis" target="_blank" rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2 bg-white text-primary font-bold text-[15px] px-6 py-3.5 rounded-xl hover:bg-blue-50 active:scale-[0.98] transition-all shadow-md flex-none whitespace-nowrap">
+            Try the Live Demo
+            <ExternalLink className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+          </a>
         </Reveal>
-        <a href="https://funsoft.systempartners.biz/funsofthmis" target="_blank" rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-card border border-border text-foreground text-[14px] font-semibold px-4 py-2.5 rounded-lg hover:border-primary/40 hover:text-primary transition-colors">
-          Try the live product demo <ExternalLink className="w-3.5 h-3.5" />
-        </a>
+        <Reveal>
+          <VideoLightbox youtubeId="_8rMMYb6XWE" thumbnailAlt="Funsoft Mobile app walkthrough" label="Watch the Funsoft Mobile app in action" />
+        </Reveal>
         <div>
           <h3 className="font-bold text-[16px] text-foreground mb-3">System Modules</h3>
           <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 gap-2" stagger={0.03}>
@@ -486,6 +514,22 @@ export function PageProductIHMIS({ nav }: { nav: Nav }) {
               <StaggerItem key={m} className="bg-card rounded-lg border border-border px-4 py-2.5 flex items-center gap-2.5 hover:border-primary/30 hover:bg-secondary/20 transition-colors">
                 <CheckCircle2 className="w-3.5 h-3.5 text-primary flex-none" />
                 <span className="text-[13px] font-medium text-foreground" style={{ fontFamily: "'Inter',sans-serif" }}>{m}</span>
+              </StaggerItem>
+            ))}
+          </StaggerGroup>
+        </div>
+        <div>
+          <h3 className="font-bold text-[16px] text-foreground mb-3">The System in Practice</h3>
+          <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3" stagger={0.05}>
+            {[
+              { src: "/assets/product/desktop-ris-pacs.jpg", caption: "RIS / PACS & DICOM imaging viewer" },
+              { src: "/assets/product/diagnostics-scheduling.jpg", caption: "Diagnostics scheduling & results access" },
+              { src: "/assets/product/android-radiology.jpg", caption: "Radiology access on Android" },
+              { src: "/assets/product/analytics-dashboard.jpg", caption: "Informatics analytics & planning" },
+            ].map(({ src, caption }) => (
+              <StaggerItem key={src} className="bg-card rounded-xl border border-border overflow-hidden hover:border-primary/30 hover:shadow-sm transition-all">
+                <img src={src} alt={caption} className="w-full aspect-video object-cover" loading="lazy" />
+                <p className="text-[12px] text-muted-foreground px-3.5 py-2.5" style={{ fontFamily: "'Inter',sans-serif" }}>{caption}</p>
               </StaggerItem>
             ))}
           </StaggerGroup>

@@ -1,16 +1,6 @@
-// Simple monochrome marks (not official brand logos) — currentColor so they
-// adapt to light/dark theme automatically.
+// Docker and Java EE have no official logo asset in this project, so they use
+// simple monochrome marks. PostgreSQL/Oracle/Linux use the real brand logos.
 type IconProps = { className?: string };
-
-function PostgresMark({ className }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
-      <path d="M12 3c-4.5 0-7.5 3.2-7.5 7.6 0 3.5 1.8 6.2 4.3 7.7.5.3.9-.1.8-.6l-.3-1.6c-.1-.6.1-1 .5-1.3 2.6-1.1 4.2-3.6 4.2-6.6C14 5.6 12 3 12 3Z" />
-      <path d="M12 3c4.5 0 7.5 3.2 7.5 7.6 0 3.5-1.8 6.2-4.3 7.7-.5.3-.9-.1-.8-.6l.3-1.6c.1-.6-.1-1-.5-1.3-2.6-1.1-4.2-3.6-4.2-6.6" />
-      <path d="M9.5 15.5c1.6.6 3.4.6 5 0" />
-    </svg>
-  );
-}
 
 function DockerMark({ className }: IconProps) {
   return (
@@ -38,40 +28,30 @@ function JavaMark({ className }: IconProps) {
   );
 }
 
-function LinuxMark({ className }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
-      <ellipse cx="12" cy="8" rx="3.2" ry="4" />
-      <path d="M9 11c-1.5 2-2.5 4-2.5 6.5 0 2 1.5 3.5 3 2.5.8-.5 1.5-.5 2.5-.5s1.7 0 2.5.5c1.5 1 3-.5 3-2.5C17.5 15 16.5 13 15 11" fillOpacity="0.85" />
-      <circle cx="10.3" cy="7.4" r="0.6" fill="white" />
-      <circle cx="13.7" cy="7.4" r="0.6" fill="white" />
-    </svg>
-  );
-}
+type TechEntry =
+  | { name: string; src: string; kind: "image" }
+  | { name: string; Mark: (props: IconProps) => React.JSX.Element; kind: "mark" };
 
-function OracleMark({ className }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-      <rect x="3" y="8" width="18" height="8" rx="4" />
-    </svg>
-  );
-}
-
-export const TECH_STACK = [
-  { name: "PostgreSQL", Mark: PostgresMark },
-  { name: "Docker", Mark: DockerMark },
-  { name: "Java EE", Mark: JavaMark },
-  { name: "Linux", Mark: LinuxMark },
-  { name: "Oracle", Mark: OracleMark },
+export const TECH_STACK: TechEntry[] = [
+  { name: "PostgreSQL", src: "/assets/tech-logos/postgresql.png", kind: "image" },
+  { name: "Oracle", src: "/assets/tech-logos/oracle.png", kind: "image" },
+  { name: "Linux", src: "/assets/tech-logos/linux.jpg", kind: "image" },
+  { name: "Docker", Mark: DockerMark, kind: "mark" },
+  { name: "Java EE", Mark: JavaMark, kind: "mark" },
 ];
 
 export function TechLogoRow({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex flex-wrap items-center gap-x-7 gap-y-3 ${className}`}>
-      {TECH_STACK.map(({ name, Mark }) => (
-        <div key={name} className="flex items-center gap-2 text-muted-foreground/80">
-          <Mark className="w-5 h-5" />
-          <span className="text-[12px] font-semibold" style={{ fontFamily: "'Inter',sans-serif" }}>{name}</span>
+    <div className={`flex flex-wrap items-center gap-3 ${className}`}>
+      {TECH_STACK.map(entry => (
+        <div key={entry.name}
+          className="flex items-center gap-2.5 bg-white border border-black/5 rounded-lg pl-2.5 pr-3.5 py-2 shadow-sm">
+          {entry.kind === "image" ? (
+            <img src={entry.src} alt={entry.name} className="h-5 w-auto object-contain" loading="lazy" />
+          ) : (
+            <entry.Mark className="w-5 h-5 text-[#1558C0]" />
+          )}
+          <span className="text-[13px] font-semibold text-[#1a2740]" style={{ fontFamily: "'Inter',sans-serif" }}>{entry.name}</span>
         </div>
       ))}
     </div>

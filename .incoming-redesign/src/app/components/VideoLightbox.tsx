@@ -3,8 +3,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Play, X } from "lucide-react";
 
 export function VideoLightbox({
-  youtubeId, thumbnailAlt, className = "",
-}: { youtubeId: string; thumbnailAlt: string; className?: string }) {
+  youtubeId, thumbnailAlt, label, className = "",
+}: { youtubeId: string; thumbnailAlt: string; label?: string; className?: string }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -28,7 +28,7 @@ export function VideoLightbox({
           </span>
         </span>
         <span className="absolute bottom-3 left-4 text-[12px] font-semibold text-white" style={{ fontFamily: "'Inter',sans-serif" }}>
-          Watch system key features
+          {label ?? "Watch system key features"}
         </span>
       </button>
 
