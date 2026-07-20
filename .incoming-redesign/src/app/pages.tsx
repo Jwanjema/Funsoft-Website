@@ -86,10 +86,10 @@ function PricingSupportPanel({ nav }: { nav: Nav }) {
           </p>
           <StaggerGroup className="grid grid-cols-1 sm:grid-cols-3 gap-3" stagger={0.08}>
             {plans.map(({ plan, price, beds, featured }) => (
-              <StaggerItem key={plan} className={`min-h-[148px] rounded-[16px] p-4 flex flex-col transition-transform duration-300 hover:-translate-y-1 ${featured ? "bg-white text-foreground ring-2 ring-blue-300" : "bg-white/[0.08] border border-white/10"}`}>
+              <StaggerItem key={plan} className={`min-h-[148px] rounded-[16px] p-4 flex flex-col transition-transform duration-300 hover:-translate-y-1 ${featured ? "bg-white text-[#0D1B2E] ring-2 ring-blue-300" : "bg-white/[0.08] border border-white/10"}`}>
                 <div className={`text-[11px] font-bold uppercase tracking-[0.14em] ${featured ? "text-primary" : "text-blue-200"}`}>{plan}</div>
-                <div className={`text-[26px] font-extrabold tracking-tight tabular-nums mt-3 ${featured ? "text-foreground" : "text-white"}`}>{price}</div>
-                <div className={`text-[13px] leading-snug mt-auto pt-4 ${featured ? "text-muted-foreground" : "text-blue-100/70"}`} style={{ fontFamily: "'Inter',sans-serif" }}>{beds}</div>
+                <div className={`text-[26px] font-extrabold tracking-tight tabular-nums mt-3 ${featured ? "text-[#0D1B2E]" : "text-white"}`}>{price}</div>
+                <div className={`text-[13px] leading-snug mt-auto pt-4 ${featured ? "text-[#5B6B82]" : "text-blue-100/70"}`} style={{ fontFamily: "'Inter',sans-serif" }}>{beds}</div>
               </StaggerItem>
             ))}
           </StaggerGroup>
