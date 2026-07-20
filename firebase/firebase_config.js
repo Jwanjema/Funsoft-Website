@@ -3,14 +3,29 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore/lite";
 
+const requiredEnvVars = [
+  "VITE_FIREBASE_API_KEY",
+  "VITE_FIREBASE_AUTH_DOMAIN",
+  "VITE_FIREBASE_PROJECT_ID",
+  "VITE_FIREBASE_STORAGE_BUCKET",
+  "VITE_FIREBASE_MESSAGING_SENDER_ID",
+  "VITE_FIREBASE_APP_ID",
+];
+const missing = requiredEnvVars.filter((key) => !import.meta.env[key]);
+if (missing.length > 0) {
+  throw new Error(
+    `Missing required Firebase env vars: ${missing.join(", ")}. Copy .env.example to .env and fill in your Firebase project's web app config.`
+  );
+}
+
 // Your web app's Firebase configuration for FUNSOFT
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCOej-dW7WVrZTQ97ATokO5FzUCzGHSvP8",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "funsoft-85c23.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "funsoft-85c23",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "funsoft-85c23.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "453869348301",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:453869348301:web:4c74b5f8d2a4deaa719084"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase

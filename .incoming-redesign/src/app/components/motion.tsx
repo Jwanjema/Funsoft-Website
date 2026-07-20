@@ -10,7 +10,25 @@ export function useTheme() {
     try { localStorage.setItem("theme", isDark ? "dark" : "light"); } catch { /* ignore */ }
   }, [isDark]);
 
-  return { isDark, toggle: () => setIsDark(v => !v) };
+  // If the visitor has never manually chosen a theme, keep following the OS setting live.
+  const explicitChoice = useRef(false);
+  try { explicitChoice.current = localStorage.getItem("theme") !== null; } catch { /* ignore */ }
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = (e: MediaQueryListEvent) => {
+      if (!explicitChoice.current) setIsDark(e.matches);
+    };
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+
+  const toggle = () => {
+    explicitChoice.current = true;
+    setIsDark(v => !v);
+  };
+
+  return { isDark, toggle };
 }
 
 // ── Scroll-triggered fade/slide-up, staggered by index ──────────────────

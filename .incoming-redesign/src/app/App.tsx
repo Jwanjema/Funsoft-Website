@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect, Suspense, lazy } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  Activity, ChevronDown, Menu, X, Search, Download, Monitor, Code2, Server,
-  GraduationCap, Microscope, Moon, Sun,
+  ChevronDown, Menu, X, Download, Monitor, Code2, Server,
+  GraduationCap, Microscope, Moon, Sun, Send, CheckCircle2, Loader2,
 } from "lucide-react";
 import { PageTransition, useTheme } from "./components/motion";
 import {
   type PageId, type ServiceTabId, type Nav, type NavEntry,
-  PAGE_TITLES, pageFromLocation,
+  PAGE_TITLES, pageFromLocation, submitLead,
 } from "./shared";
 import { PageHome } from "./page-home";
 
@@ -137,29 +137,15 @@ function NavItem({ entry, nav, current }: { entry: NavEntry; nav: Nav; current: 
 function MainNav({ nav, current }: { nav: Nav; current: PageId }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const { isDark, toggle: toggleTheme } = useTheme();
   const go = (p: PageId) => { nav(p); setMobileOpen(false); };
-  const runSearch = () => {
-    const query = searchQuery.trim().toLowerCase();
-    const pages = NAV_CONFIG.flatMap(entry => entry.children ?? (entry.page ? [{ label: entry.label, page: entry.page }] : []));
-    const match = pages.find(item => item.label.toLowerCase().includes(query));
-    if (match) {
-      nav(match.page);
-      setSearchOpen(false);
-      setSearchQuery("");
-    }
-  };
 
   return (
     <nav className="flex-none bg-card border-b border-border z-20 relative">
       <div className="flex items-center justify-between px-6 lg:px-10 py-3 gap-4">
         {/* Logo */}
         <button onClick={() => nav("home")} className="flex items-center gap-3 flex-none">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <Activity className="w-5 h-5 text-white" strokeWidth={2.5} />
-          </div>
+          <img src="/funsoft-logo.png" alt="Funsoft logo" className="w-10 h-10 flex-none" width={40} height={40} />
           <div className="leading-none text-left">
             <div className="font-extrabold text-[15px] text-foreground tracking-tight">System Partners</div>
             <div className="text-[9px] font-bold text-primary tracking-[0.22em] uppercase mt-0.5"
@@ -174,20 +160,6 @@ function MainNav({ nav, current }: { nav: Nav; current: PageId }) {
 
         {/* Right controls */}
         <div className="hidden lg:flex items-center gap-3">
-          {searchOpen ? (
-            <div className="flex items-center gap-2 border border-border rounded-lg px-3 py-1.5 bg-background">
-              <Search className="w-3.5 h-3.5 text-muted-foreground flex-none" />
-              <input autoFocus placeholder="Search pages…" aria-label="Search website pages" value={searchQuery}
-                onChange={event => setSearchQuery(event.target.value)}
-                onKeyDown={event => { if (event.key === "Enter") runSearch(); if (event.key === "Escape") setSearchOpen(false); }}
-                className="text-[13px] bg-transparent outline-none w-36 placeholder:text-muted-foreground"
-                style={{ fontFamily: "'Inter',sans-serif" }} />
-            </div>
-          ) : (
-            <button onClick={() => setSearchOpen(true)} aria-label="Search website" className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-secondary transition-colors">
-              <Search className="w-4 h-4" />
-            </button>
-          )}
           <button onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-secondary transition-colors">
             {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -267,23 +239,102 @@ function MainNav({ nav, current }: { nav: Nav; current: PageId }) {
 // ── SERVICES STRIP ────────────────────────────────────────────────────────
 const SERVICE_IDS: PageId[] = ["services-dev", "services-system", "services-training", "services-rd"];
 
+function LinkedInMark({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
+      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z" />
+    </svg>
+  );
+}
+
+// ── NEWSLETTER BAND ─────────────────────────────────────────────────────
+function NewsletterBand() {
+  const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (website) {
+      setDone(true);
+      return;
+    }
+    setSubmitting(true);
+    setError("");
+    try {
+      await submitLead("newsletter_signup", { email });
+      setDone(true);
+      setEmail("");
+    } catch (submissionError) {
+      console.error("Newsletter signup failed", submissionError);
+      setError("Couldn't subscribe right now — please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="flex-none bg-primary px-5 sm:px-8 py-6 sm:py-7">
+      <div className="max-w-[1180px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p className="text-white font-semibold text-[14px] sm:text-[15px] text-center sm:text-left" style={{ fontFamily: "'Inter',sans-serif" }}>
+          Don&apos;t miss out on our latest updates about our product offers and upgrades.
+        </p>
+        {done ? (
+          <p className="flex items-center gap-2 text-white text-[13px] font-semibold">
+            <CheckCircle2 className="w-4 h-4" />Subscribed — thank you!
+          </p>
+        ) : (
+          <form onSubmit={handleSubmit} aria-busy={submitting} className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="absolute -left-[9999px]" aria-hidden="true">
+              <label htmlFor="newsletter-company-website">Company website</label>
+              <input id="newsletter-company-website" name="company_website" tabIndex={-1} autoComplete="off" value={website} onChange={e => setWebsite(e.target.value)} />
+            </div>
+            <input
+              type="email" required placeholder="you@example.com" aria-label="Email address"
+              value={email} onChange={e => setEmail(e.target.value)}
+              className="flex-1 sm:w-64 bg-white/15 border border-white/25 text-white placeholder:text-white/60 text-[13px] rounded-lg px-3.5 py-2.5 focus:outline-none focus:bg-white/20 focus:border-white/50 transition-colors"
+              style={{ fontFamily: "'Inter',sans-serif" }}
+            />
+            <button type="submit" disabled={submitting}
+              aria-label="Subscribe"
+              className="bg-white text-primary font-bold text-[13px] px-4 py-2.5 rounded-lg hover:bg-blue-50 disabled:opacity-80 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5 flex-none">
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+              <span className="hidden sm:inline">Subscribe</span>
+            </button>
+          </form>
+        )}
+      </div>
+      {error && <p role="alert" className="max-w-[1180px] mx-auto text-[12px] text-blue-100 mt-2 text-center sm:text-left">{error}</p>}
+    </div>
+  );
+}
+
 // ── FOOTER ────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer className="flex-none flex flex-col sm:flex-row items-center justify-between px-5 sm:px-8 py-4 bg-[#0D1B2E] text-white/55 gap-3 text-center sm:text-left">
-      <span className="text-[11px]" style={{ fontFamily: "'Inter',sans-serif" }}>
-        © 2026 System Partners Limited · Westlands Business Park, Nairobi, Kenya
-      </span>
-      <div className="flex items-center gap-5">
-        {([
-          ["Facebook", "https://facebook.com/funsofthmis"],
-          ["Twitter", "https://twitter.com/funsofthealth"],
-          ["Instagram", "https://instagram.com/funsofthealth"],
-        ] as const).map(([label, href]) => (
-          <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="text-[11px] hover:text-white transition-colors" style={{ fontFamily: "'Inter',sans-serif" }}>{label}</a>
-        ))}
-      </div>
-    </footer>
+    <>
+      <NewsletterBand />
+      <footer className="flex-none flex flex-col sm:flex-row items-center justify-between px-5 sm:px-8 py-4 bg-[#0D1B2E] text-white/55 gap-3 text-center sm:text-left">
+        <span className="text-[11px]" style={{ fontFamily: "'Inter',sans-serif" }}>
+          © 2026 System Partners Limited · Westlands Business Park, Nairobi, Kenya
+        </span>
+        <div className="flex items-center gap-5">
+          {([
+            ["Facebook", "https://facebook.com/funsofthmis"],
+            ["Twitter", "https://twitter.com/funsofthealth"],
+            ["Instagram", "https://instagram.com/funsofthealth"],
+            ["LinkedIn", "https://ke.linkedin.com/company/system-partners-ltd"],
+          ] as const).map(([label, href]) => (
+            <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="text-[11px] hover:text-white transition-colors flex items-center gap-1.5" style={{ fontFamily: "'Inter',sans-serif" }}>
+              {label === "LinkedIn" && <LinkedInMark className="w-3 h-3" />}
+              {label}
+            </a>
+          ))}
+        </div>
+      </footer>
+    </>
   );
 }
 
