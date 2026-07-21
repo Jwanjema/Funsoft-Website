@@ -2,12 +2,13 @@ import { useState, useRef, useEffect, Suspense, lazy } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ChevronDown, Menu, X, Download, Monitor, Code2, Server,
-  GraduationCap, Microscope, Moon, Sun, Send, CheckCircle2, Loader2,
+  GraduationCap, Microscope, Moon, Sun,
+  Mail, Phone,
 } from "lucide-react";
 import { PageTransition, useTheme } from "./components/motion";
 import {
   type PageId, type ServiceTabId, type Nav, type NavEntry,
-  PAGE_TITLES, pageFromLocation, submitLead,
+  PAGE_TITLES, pageFromLocation,
 } from "./shared";
 import { PageHome } from "./page-home";
 
@@ -72,6 +73,7 @@ const PageProductERP = lazy(() => import("./pages").then(m => ({ default: m.Page
 const PageProductAI = lazy(() => import("./pages").then(m => ({ default: m.PageProductAI })));
 const PageResourcesDemo = lazy(() => import("./pages").then(m => ({ default: m.PageResourcesDemo })));
 const PageResourcesDownloads = lazy(() => import("./pages").then(m => ({ default: m.PageResourcesDownloads })));
+const PageLiveDemo = lazy(() => import("./pages").then(m => ({ default: m.PageLiveDemo })));
 const PageContact = lazy(() => import("./pages").then(m => ({ default: m.PageContact })));
 
 function PageLoading() {
@@ -247,94 +249,33 @@ function LinkedInMark({ className = "" }: { className?: string }) {
   );
 }
 
-// ── NEWSLETTER BAND ─────────────────────────────────────────────────────
-function NewsletterBand() {
-  const [email, setEmail] = useState("");
-  const [website, setWebsite] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (website) {
-      setDone(true);
-      return;
-    }
-    setSubmitting(true);
-    setError("");
-    try {
-      await submitLead("newsletter_signup", { email });
-      setDone(true);
-      setEmail("");
-    } catch (submissionError) {
-      console.error("Newsletter signup failed", submissionError);
-      setError("Couldn't subscribe right now — please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="flex-none bg-primary px-5 sm:px-8 py-6 sm:py-7">
-      <div className="max-w-[1180px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-white font-semibold text-[14px] sm:text-[15px] text-center sm:text-left" style={{ fontFamily: "'Inter',sans-serif" }}>
-          Don&apos;t miss out on our latest updates about our product offers and upgrades.
-        </p>
-        {done ? (
-          <p className="flex items-center gap-2 text-white text-[13px] font-semibold">
-            <CheckCircle2 className="w-4 h-4" />Subscribed — thank you!
-          </p>
-        ) : (
-          <form onSubmit={handleSubmit} aria-busy={submitting} className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="absolute -left-[9999px]" aria-hidden="true">
-              <label htmlFor="newsletter-company-website">Company website</label>
-              <input id="newsletter-company-website" name="company_website" tabIndex={-1} autoComplete="off" value={website} onChange={e => setWebsite(e.target.value)} />
-            </div>
-            <input
-              type="email" required placeholder="you@example.com" aria-label="Email address"
-              value={email} onChange={e => setEmail(e.target.value)}
-              className="flex-1 sm:w-64 bg-white/15 border border-white/25 text-white placeholder:text-white/60 text-[13px] rounded-lg px-3.5 py-2.5 focus:outline-none focus:bg-white/20 focus:border-white/50 transition-colors"
-              style={{ fontFamily: "'Inter',sans-serif" }}
-            />
-            <button type="submit" disabled={submitting}
-              aria-label="Subscribe"
-              className="bg-white text-primary font-bold text-[13px] px-4 py-2.5 rounded-lg hover:bg-blue-50 disabled:opacity-80 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5 flex-none">
-              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-              <span className="hidden sm:inline">Subscribe</span>
-            </button>
-          </form>
-        )}
-      </div>
-      {error && <p role="alert" className="max-w-[1180px] mx-auto text-[12px] text-blue-100 mt-2 text-center sm:text-left">{error}</p>}
-    </div>
-  );
-}
-
 // ── FOOTER ────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <>
-      <NewsletterBand />
-      <footer className="flex-none flex flex-col sm:flex-row items-center justify-between px-5 sm:px-8 py-4 bg-[#0D1B2E] text-white/55 gap-3 text-center sm:text-left">
-        <span className="text-[11px]" style={{ fontFamily: "'Inter',sans-serif" }}>
-          © 2026 System Partners Limited · Westlands Business Park, Nairobi, Kenya
-        </span>
-        <div className="flex items-center gap-5">
-          {([
-            ["Facebook", "https://facebook.com/funsofthmis"],
-            ["Twitter", "https://twitter.com/funsofthealth"],
-            ["Instagram", "https://instagram.com/funsofthealth"],
-            ["LinkedIn", "https://ke.linkedin.com/company/system-partners-ltd"],
-          ] as const).map(([label, href]) => (
-            <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="text-[11px] hover:text-white transition-colors flex items-center gap-1.5" style={{ fontFamily: "'Inter',sans-serif" }}>
-              {label === "LinkedIn" && <LinkedInMark className="w-3 h-3" />}
-              {label}
-            </a>
-          ))}
-        </div>
-      </footer>
-    </>
+    <footer className="flex-none flex flex-col sm:flex-row items-center justify-between px-5 sm:px-8 py-4 bg-[#0D1B2E] text-white/55 gap-3 text-center sm:text-left">
+      <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-4 text-[11px]" style={{ fontFamily: "'Inter',sans-serif" }}>
+        <span>© 2026 System Partners Limited · Westlands Business Park, Nairobi, Kenya</span>
+        <a href="mailto:info@systempartners.biz" className="flex items-center gap-1.5 hover:text-white transition-colors">
+          <Mail className="w-3 h-3 flex-none" />info@systempartners.biz
+        </a>
+        <a href="tel:+254714433693" className="flex items-center gap-1.5 hover:text-white transition-colors">
+          <Phone className="w-3 h-3 flex-none" />+254 714 433693
+        </a>
+      </div>
+      <div className="flex items-center gap-5">
+        {([
+          ["Facebook", "https://facebook.com/funsofthmis"],
+          ["Twitter", "https://twitter.com/funsofthealth"],
+          ["Instagram", "https://instagram.com/funsofthealth"],
+          ["LinkedIn", "https://ke.linkedin.com/company/system-partners-ltd"],
+        ] as const).map(([label, href]) => (
+          <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="text-[11px] hover:text-white transition-colors flex items-center gap-1.5" style={{ fontFamily: "'Inter',sans-serif" }}>
+            {label === "LinkedIn" && <LinkedInMark className="w-3 h-3" />}
+            {label}
+          </a>
+        ))}
+      </div>
+    </footer>
   );
 }
 
@@ -376,24 +317,25 @@ export default function App() {
       case "product-ai":          return <PageProductAI nav={navigate} />;
       case "resources-demo":      return <PageResourcesDemo nav={navigate} />;
       case "resources-downloads": return <PageResourcesDownloads nav={navigate} />;
+      case "live-demo":           return <PageLiveDemo />;
       case "contact":             return <PageContact />;
       default:                    return <PageHome nav={navigate} />;
     }
   }
 
   return (
-    <div className={`w-full bg-background text-foreground flex flex-col ${page === "home" ? "h-[100dvh] overflow-hidden" : "min-h-[100dvh] overflow-x-hidden"}`}
+    <div className="w-full h-dvh bg-background text-foreground flex flex-col overflow-hidden"
       style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:bg-card focus:text-primary focus:px-4 focus:py-2 focus:rounded-lg">Skip to content</a>
       <MainNav nav={navigate} current={page} />
-      <main id="main-content" className={page === "home" ? "flex-1 min-h-0 overflow-hidden" : "flex-1"}>
+      <main id="main-content" className={page === "home" || page === "live-demo" ? "flex-1 min-h-0 overflow-hidden" : "flex-1 min-h-0 overflow-y-auto"}>
         <Suspense fallback={<PageLoading />}>
           <AnimatePresence mode="wait">
             <PageTransition pageKey={page}>{renderPage()}</PageTransition>
           </AnimatePresence>
         </Suspense>
       </main>
-      {page !== "home" && <Footer />}
+      <Footer />
     </div>
   );
 }

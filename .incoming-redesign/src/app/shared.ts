@@ -20,7 +20,7 @@ export type PageId =
   | "home" | "background" | "who-we-are" | "achievements"
   | "services-dev" | "services-system" | "services-training" | "services-rd"
   | "product-ihmis" | "product-erp" | "product-ai"
-  | "resources-demo" | "resources-downloads" | "contact";
+  | "resources-demo" | "resources-downloads" | "contact" | "live-demo";
 
 export type ServiceTabId = "services-dev" | "services-system" | "services-training" | "services-rd";
 export type Nav = (page: PageId) => void;
@@ -40,6 +40,7 @@ export const PAGE_TITLES: Record<PageId, string> = {
   "resources-demo": "Request a Product Demo | System Partners Limited",
   "resources-downloads": "Product Resources | System Partners Limited",
   contact: "Contact System Partners Limited",
+  "live-demo": "Live Demo | Funsoft I-HMIS",
 };
 
 export const PAGE_IDS = new Set<PageId>(Object.keys(PAGE_TITLES) as PageId[]);

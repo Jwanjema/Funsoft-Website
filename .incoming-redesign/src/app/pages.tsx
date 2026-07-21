@@ -365,10 +365,12 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
 
 // ── PAGE: ACHIEVEMENTS ──────────────────────────────────────────────────
 export function PageAchievements({ nav }: { nav: Nav }) {
-  const testimonials = [
-    { name: "Allan Duncan Omondi", role: "CEO", org: "Jaramogi Oginga Odinga Teaching & Referral Hospital", year: "Since 2010", quote: "The Funsoft I-HMIS has had a profoundly positive impact on our operations — from EMR and finance through supply chain, pharmacy, nursing, and document handling. System Partners have been a dependable partner throughout." },
-    { name: "Dr. Timothy Panga", role: "Ag. CEO", org: "Nanyuki Teaching and Referral Hospital", year: "Since 2010", quote: "SPL adhered to our annual SLA to keep the software running and updated, covering EMR, finance, Universal Healthcare modules, and more. Their responsiveness and professionalism are commendable." },
-    { name: "Dr. Oduor Michael", role: "Medical Superintendent", org: "Siaya County Referral Hospital", year: "Since 2018", quote: "The system integrated seamlessly with our laboratory information system and enabled M-Pesa cashless operations. System Partners Limited is a reliable, flexible, and trusted partner." },
+  const trustedBy = [
+    { name: "Jaramogi Oginga Odinga Teaching & Referral Hospital", since: "Since 2010" },
+    { name: "Nanyuki Teaching and Referral Hospital", since: "Since 2010" },
+    { name: "Siaya County Referral Hospital", since: "Since 2018" },
+    { name: "Moi Teaching & Referral Hospital", since: "Since 2007" },
+    { name: "Pumwani Maternity Hospital", since: "Since 2011" },
   ];
   return (
     <SubPage breadcrumb="About Us / Our Achievements" title="Our Achievements"
@@ -394,8 +396,21 @@ export function PageAchievements({ nav }: { nav: Nav }) {
         </StaggerGroup>
 
         <div>
-          <h3 className="font-bold text-[17px] text-foreground mb-4">What Our Clients Say</h3>
-          <TestimonialCarousel testimonials={testimonials} />
+          <h3 className="font-bold text-[17px] text-foreground mb-4">Trusted by Leading Healthcare Institutions</h3>
+          <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 gap-3" stagger={0.05}>
+            {trustedBy.map(({ name, since }) => (
+              <StaggerItem key={name} className="bg-card rounded-xl border border-border p-5 flex items-center gap-4 hover:border-primary/30 hover:shadow-sm transition-all">
+                <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center flex-none">
+                  <Award className="w-4 h-4 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <div className="font-semibold text-[14px] text-foreground leading-snug">{name}</div>
+                  <div className="text-[11px] font-semibold text-primary/70 uppercase tracking-wider mt-0.5"
+                    style={{ fontFamily: "'Inter',sans-serif" }}>{since}</div>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerGroup>
         </div>
       </div>
     </SubPage>
@@ -498,11 +513,11 @@ export function PageProductIHMIS({ nav }: { nav: Nav }) {
               Explore the full live system yourself — no sign-up required.
             </p>
           </div>
-          <a href="https://funsoft.systempartners.biz/funsofthmis" target="_blank" rel="noopener noreferrer"
+          <button onClick={() => nav("live-demo")}
             className="group inline-flex items-center gap-2 bg-white text-primary font-bold text-[15px] px-6 py-3.5 rounded-xl hover:bg-blue-50 active:scale-[0.98] transition-all shadow-md flex-none whitespace-nowrap">
             Try the Live Demo
-            <ExternalLink className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-          </a>
+            <ChevronRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+          </button>
         </Reveal>
         <Reveal>
           <VideoLightbox youtubeId="_8rMMYb6XWE" thumbnailAlt="Funsoft Mobile app walkthrough" label="Watch the Funsoft Mobile app in action" />
@@ -764,6 +779,40 @@ export function PageResourcesDownloads({ nav }: { nav: Nav }) {
         </div>
       </div>
     </SubPage>
+  );
+}
+
+// ── PAGE: LIVE DEMO (embedded, full-bleed) ──────────────────────────────
+const LIVE_DEMO_URL = "https://funsoft.systempartners.biz/funsofthmis/";
+
+export function PageLiveDemo() {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="h-full flex flex-col">
+      <div className="flex-none flex items-center justify-between gap-3 px-5 sm:px-8 py-3 border-b border-border bg-card">
+        <div className="min-w-0">
+          <h1 className="font-bold text-[15px] text-foreground truncate">Funsoft I-HMIS — Live Demo</h1>
+          <p className="text-[12px] text-muted-foreground truncate" style={{ fontFamily: "'Inter',sans-serif" }}>{LIVE_DEMO_URL}</p>
+        </div>
+        <a href={LIVE_DEMO_URL} target="_blank" rel="noopener noreferrer"
+          className="flex-none inline-flex items-center gap-1.5 text-[13px] font-semibold text-primary hover:text-accent transition-colors whitespace-nowrap">
+          Open in new tab<ExternalLink className="w-3.5 h-3.5" />
+        </a>
+      </div>
+      <div className="flex-1 min-h-0 relative bg-secondary/30">
+        {!loaded && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-full border-2 border-primary/25 border-t-primary animate-spin" />
+          </div>
+        )}
+        <iframe
+          src={LIVE_DEMO_URL}
+          title="Funsoft I-HMIS live demo"
+          className="w-full h-full border-0"
+          onLoad={() => setLoaded(true)}
+        />
+      </div>
+    </div>
   );
 }
 

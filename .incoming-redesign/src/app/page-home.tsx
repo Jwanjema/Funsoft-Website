@@ -1,6 +1,6 @@
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import {
-  Activity, Shield, MapPin, Mail, Clock, CheckCircle2, Brain, BarChart3, ChevronRight,
+  Activity, Shield, CheckCircle2, Brain, BarChart3, ChevronRight,
 } from "lucide-react";
 import { CountUp } from "./components/motion";
 import { Img } from "./components/Img";
@@ -71,18 +71,6 @@ export function PageHome({ nav }: { nav: Nav }) {
             ))}
           </motion.div>
         </div>
-
-        <motion.div variants={item} className="hidden lg:flex flex-wrap items-center gap-6 pt-5 border-t border-border" style={{ fontFamily: "'Inter',sans-serif" }}>
-          <span className="flex items-center gap-2 text-[14px] text-muted-foreground">
-            <MapPin className="w-4 h-4 text-primary/60 flex-none" />Westlands Business Park, 4th Floor, Nairobi
-          </span>
-          <span className="flex items-center gap-2 text-[14px] text-muted-foreground">
-            <Mail className="w-4 h-4 text-primary/60 flex-none" />info@systempartners.biz
-          </span>
-          <span className="flex items-center gap-2 text-[14px] text-muted-foreground">
-            <Clock className="w-4 h-4 text-primary/60 flex-none" />Mon – Fri, 8 AM – 5 PM
-          </span>
-        </motion.div>
       </motion.div>
 
       {/* RIGHT — full-height image with product overlay */}
