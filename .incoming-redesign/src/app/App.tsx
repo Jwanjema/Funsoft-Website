@@ -144,13 +144,13 @@ function MainNav({ nav, current }: { nav: Nav; current: PageId }) {
 
   return (
     <nav className="flex-none bg-card border-b border-border z-20 relative">
-      <div className="flex items-center justify-between px-6 lg:px-10 py-3 gap-4">
+      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-10 py-3 gap-2 sm:gap-4">
         {/* Logo */}
-        <button onClick={() => nav("home")} className="flex items-center gap-3 flex-none">
-          <img src="/funsoft-logo.png" alt="Funsoft logo" className="w-10 h-10 flex-none" width={40} height={40} />
-          <div className="leading-none text-left">
-            <div className="font-extrabold text-[15px] text-foreground tracking-tight">System Partners</div>
-            <div className="text-[9px] font-bold text-primary tracking-[0.22em] uppercase mt-0.5"
+        <button onClick={() => nav("home")} className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 lg:flex-none">
+          <img src="/funsoft-logo.png" alt="Funsoft logo" className="w-9 h-9 sm:w-10 sm:h-10 flex-none" width={40} height={40} />
+          <div className="leading-none text-left min-w-0">
+            <div className="font-extrabold text-[13px] sm:text-[15px] text-foreground tracking-tight truncate">System Partners</div>
+            <div className="text-[8px] sm:text-[9px] font-bold text-primary tracking-[0.14em] sm:tracking-[0.22em] uppercase mt-0.5 truncate"
               style={{ fontFamily: "'Inter',sans-serif" }}>Funsoft® I-HMIS · Limited</div>
           </div>
         </button>
@@ -173,7 +173,7 @@ function MainNav({ nav, current }: { nav: Nav; current: PageId }) {
         </div>
 
         {/* Mobile toggle */}
-        <div className="lg:hidden flex items-center gap-1">
+        <div className="lg:hidden flex items-center gap-1 flex-none">
           <button onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             className="p-2 text-muted-foreground hover:text-primary">
             {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -184,6 +184,21 @@ function MainNav({ nav, current }: { nav: Nav; current: PageId }) {
         </div>
       </div>
 
+      {/* Mobile menu backdrop */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setMobileOpen(false)}
+            className="lg:hidden fixed inset-0 bg-black/40 z-10"
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
@@ -192,7 +207,7 @@ function MainNav({ nav, current }: { nav: Nav; current: PageId }) {
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:hidden border-t border-border bg-card px-6 py-4 flex flex-col gap-1 max-h-[65vh] overflow-y-auto"
+          className="lg:hidden absolute top-full left-0 right-0 z-20 border-t border-border bg-card px-6 py-4 flex flex-col gap-1 max-h-[65vh] overflow-y-auto shadow-lg"
           style={{ fontFamily: "'Inter',sans-serif" }}>
           {NAV_CONFIG.map(entry => {
             const childPages = entry.children ?? [];

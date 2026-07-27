@@ -598,6 +598,84 @@ export function PageProductERP({ nav }: { nav: Nav }) {
 }
 
 // ── PAGE: HEALTHCARE AI ─────────────────────────────────────────────────
+const HEALTH_CHECK_FIELDS = [
+  { key: "bp", label: "Blood Pressure", placeholder: "120/80", unit: "mmHg" },
+  { key: "hr", label: "Heart Rate", placeholder: "72", unit: "bpm" },
+  { key: "temp", label: "Temperature", placeholder: "36.8", unit: "°C" },
+  { key: "sugar", label: "Blood Sugar", placeholder: "5.4", unit: "mmol/L" },
+] as const;
+
+function HealthCheckPreview() {
+  const [values, setValues] = useState<Record<string, string>>({});
+  const [result, setResult] = useState<string | null>(null);
+
+  const handleCheck = (event: React.FormEvent) => {
+    event.preventDefault();
+    setResult(
+      "This is a preview of how Funsoft Healthcare AI will respond. Once connected to live clinical logic, this panel will return personalised, data-driven health recommendations based on the values entered above."
+    );
+  };
+
+  return (
+    <Reveal className="bg-card rounded-xl border border-border overflow-hidden">
+      <div className="bg-gradient-to-r from-primary to-[#0d3f8f] px-5 sm:px-6 py-4 flex items-center gap-3">
+        <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center flex-none">
+          <Brain className="w-4.5 h-4.5 text-white" />
+        </div>
+        <div className="min-w-0">
+          <h3 className="font-bold text-[15px] text-white leading-tight">Quick Health Check</h3>
+          <p className="text-[12px] text-blue-100" style={{ fontFamily: "'Inter',sans-serif" }}>Preview — sample interaction, not live yet</p>
+        </div>
+      </div>
+
+      <form onSubmit={handleCheck} className="p-5 sm:p-6 space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {HEALTH_CHECK_FIELDS.map(({ key, label, placeholder, unit }) => (
+            <div key={key}>
+              <label htmlFor={`hc-${key}`} className="block text-[13px] font-semibold text-foreground mb-1.5" style={{ fontFamily: "'Inter',sans-serif" }}>
+                {label}
+              </label>
+              <div className="relative">
+                <input
+                  id={`hc-${key}`}
+                  type="text"
+                  placeholder={placeholder}
+                  value={values[key] ?? ""}
+                  onChange={e => setValues({ ...values, [key]: e.target.value })}
+                  className="w-full border border-border rounded-lg pl-3.5 pr-14 py-2.5 text-[14px] bg-background focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all"
+                  style={{ fontFamily: "'Inter',sans-serif" }}
+                />
+                <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-muted-foreground">{unit}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button type="submit"
+          className="w-full inline-flex items-center justify-center gap-2 bg-primary text-white font-bold text-[14px] px-5 py-3 rounded-lg hover:bg-accent active:scale-[0.98] transition-all">
+          <Brain className="w-4 h-4" />Get AI Recommendations
+        </button>
+
+        <AnimatePresence>
+          {result && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-start gap-3 bg-secondary/60 border border-primary/15 rounded-xl p-4">
+              <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center flex-none mt-0.5">
+                <Brain className="w-3.5 h-3.5 text-white" />
+              </div>
+              <p className="text-[13px] text-foreground leading-relaxed" style={{ fontFamily: "'Inter',sans-serif" }}>{result}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </form>
+    </Reveal>
+  );
+}
+
 export function PageProductAI({ nav }: { nav: Nav }) {
   return (
     <SubPage breadcrumb="Products / Funsoft Healthcare AI" title="Funsoft Healthcare AI"
@@ -613,6 +691,9 @@ export function PageProductAI({ nav }: { nav: Nav }) {
           and decision-support layer built on top of Funsoft I-HMIS. It applies machine learning to patient and operational data
           to surface actionable insights in real time, enabling clinicians and administrators to make faster, better-informed decisions.
         </p>
+
+        <HealthCheckPreview />
+
         <StaggerGroup className="grid grid-cols-1 gap-3">
           {[
             { icon: BarChart3, title: "Predictive Analytics", body: "Forecast patient volumes, resource utilisation, and supply needs before they become critical — reducing bottlenecks and reactive firefighting." },

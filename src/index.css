@@ -23,7 +23,7 @@ textarea {
   outline-offset: 3px;
 }
 
-@media (max-width: 1023px) and (max-height: 600px) {
+@media (max-width: 1023px) and (max-height: 740px) {
   .home-responsive-badge,
   .home-responsive-copy {
     display: none;
@@ -35,7 +35,7 @@ textarea {
   }
 }
 
-@media (max-width: 1023px) and (max-height: 440px) {
+@media (max-width: 1023px) and (max-height: 520px) {
   .home-responsive-stats {
     display: none;
   }

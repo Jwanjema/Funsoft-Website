@@ -59,13 +59,13 @@ export function PageHome({ nav }: { nav: Nav }) {
               Meet with Us
             </button>
           </motion.div>
-          <motion.div variants={item} className="home-responsive-stats grid grid-cols-3 gap-3 sm:flex sm:items-center sm:gap-12">
+          <motion.div variants={item} className="home-responsive-stats grid grid-cols-3 gap-2 sm:gap-12 sm:flex sm:items-center">
             {stats.map(({ value, label }) => (
-              <div key={label}>
-                <div className="text-[26px] sm:text-[34px] font-extrabold text-primary leading-none mb-1 tabular-nums">
+              <div key={label} className="min-w-0">
+                <div className="text-[22px] sm:text-[34px] font-extrabold text-primary leading-none mb-1 tabular-nums">
                   <CountUp value={value} />
                 </div>
-                <div className="text-[11px] sm:text-[13px] font-semibold text-muted-foreground uppercase tracking-wider sm:tracking-widest leading-tight"
+                <div className="text-[10px] sm:text-[13px] font-semibold text-muted-foreground uppercase tracking-wide sm:tracking-widest leading-tight break-words"
                   style={{ fontFamily: "'Inter',sans-serif" }}>{label}</div>
               </div>
             ))}
