@@ -111,6 +111,7 @@ export function CountUp({
   const started = useRef(false);
 
   useEffect(() => {
+    started.current = false;
     if (reduce) { setDisplay(value); return; }
     const numMatch = value.match(/[\d.]+/);
     if (!numMatch) { setDisplay(value); return; }

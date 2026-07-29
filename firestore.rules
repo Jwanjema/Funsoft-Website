@@ -2,6 +2,19 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ── ADMIN CHECK ─────────────────────────────────────────────────────
+    // Anyone signed in (Email/Password or Google) with an email on this
+    // list can manage CMS content. Add more admins here as needed — this
+    // list is the only gate, so keep it accurate.
+    function isAdmin() {
+      return request.auth != null &&
+        request.auth.token.email in [
+          'wawerujoe@gmail.com'
+        ];
+    }
+
+    // ── PUBLIC LEAD FORMS (demo requests, contact messages, newsletter) ──
     match /website_leads/{leadId} {
       allow create: if
         request.resource.data.keys().hasOnly([
@@ -49,7 +62,23 @@ service cloud.firestore {
           )
         );
 
-      allow read, update, delete: if false;
+      // Leads are a write-only inbox from the public site's perspective —
+      // only an admin can read/manage them (e.g. from a future admin inbox view).
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // ── CMS-MANAGED SITE CONTENT ─────────────────────────────────────────
+    // Public site reads these to render testimonials, pricing, stats, etc.
+    // Only allow-listed admins (via isAdmin()) can create/edit/delete them.
+    match /site_content/{sectionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Default deny for anything not explicitly matched above.
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

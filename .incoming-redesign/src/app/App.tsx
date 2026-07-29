@@ -11,6 +11,7 @@ import {
   PAGE_TITLES, pageFromLocation,
 } from "./shared";
 import { PageHome } from "./page-home";
+import { useSiteContent } from "./content/useSiteContent";
 
 // ── NAV CONFIG ──────────────────────────────────────────────────────────
 const NAV_CONFIG: NavEntry[] = [
@@ -75,6 +76,7 @@ const PageResourcesDemo = lazy(() => import("./pages").then(m => ({ default: m.P
 const PageResourcesDownloads = lazy(() => import("./pages").then(m => ({ default: m.PageResourcesDownloads })));
 const PageLiveDemo = lazy(() => import("./pages").then(m => ({ default: m.PageLiveDemo })));
 const PageContact = lazy(() => import("./pages").then(m => ({ default: m.PageContact })));
+const AdminPage = lazy(() => import("./admin/AdminPage").then(m => ({ default: m.AdminPage })));
 
 function PageLoading() {
   return (
@@ -266,23 +268,28 @@ function LinkedInMark({ className = "" }: { className?: string }) {
 
 // ── FOOTER ────────────────────────────────────────────────────────────────
 function Footer() {
+  const contact = useSiteContent("contact");
+  const year = new Date().getFullYear();
+  const primaryPhone = contact.phones[contact.phones.length - 1] ?? contact.phones[0];
   return (
     <footer className="flex-none flex flex-col sm:flex-row items-center justify-between px-5 sm:px-8 py-4 bg-[#0D1B2E] text-white/55 gap-3 text-center sm:text-left">
       <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-4 text-[11px]" style={{ fontFamily: "'Inter',sans-serif" }}>
-        <span>© 2026 System Partners Limited · Westlands Business Park, Nairobi, Kenya</span>
-        <a href="mailto:info@systempartners.biz" className="flex items-center gap-1.5 hover:text-white transition-colors">
-          <Mail className="w-3 h-3 flex-none" />info@systempartners.biz
+        <span>© {year} System Partners Limited · {contact.addressLines.join(", ")}</span>
+        <a href={`mailto:${contact.email}`} className="flex items-center gap-1.5 hover:text-white transition-colors">
+          <Mail className="w-3 h-3 flex-none" />{contact.email}
         </a>
-        <a href="tel:+254714433693" className="flex items-center gap-1.5 hover:text-white transition-colors">
-          <Phone className="w-3 h-3 flex-none" />+254 714 433693
-        </a>
+        {primaryPhone && (
+          <a href={`tel:${primaryPhone.replace(/\s+/g, "")}`} className="flex items-center gap-1.5 hover:text-white transition-colors">
+            <Phone className="w-3 h-3 flex-none" />{primaryPhone}
+          </a>
+        )}
       </div>
       <div className="flex items-center gap-5">
         {([
-          ["Facebook", "https://facebook.com/funsofthmis"],
-          ["Twitter", "https://twitter.com/funsofthealth"],
-          ["Instagram", "https://instagram.com/funsofthealth"],
-          ["LinkedIn", "https://ke.linkedin.com/company/system-partners-ltd"],
+          ["Facebook", contact.facebookUrl],
+          ["Twitter", contact.twitterUrl],
+          ["Instagram", contact.instagramUrl],
+          ["LinkedIn", contact.linkedinUrl],
         ] as const).map(([label, href]) => (
           <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="text-[11px] hover:text-white transition-colors flex items-center gap-1.5" style={{ fontFamily: "'Inter',sans-serif" }}>
             {label === "LinkedIn" && <LinkedInMark className="w-3 h-3" />}
@@ -334,6 +341,7 @@ export default function App() {
       case "resources-downloads": return <PageResourcesDownloads nav={navigate} />;
       case "live-demo":           return <PageLiveDemo />;
       case "contact":             return <PageContact />;
+      case "admin":               return <AdminPage />;
       default:                    return <PageHome nav={navigate} />;
     }
   }

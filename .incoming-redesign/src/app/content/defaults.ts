@@ -1,73 +1,87 @@
-import { Code2, Server, GraduationCap, Microscope, type ComponentType } from "lucide-react";
+// ── SINGLE SOURCE OF TRUTH FOR EDITABLE SITE CONTENT ────────────────────
+// These are the *default* values, used to seed Firestore on first run and
+// as a fallback if a document hasn't been created/edited yet. Once the CMS
+// is live, the admin panel edits the Firestore documents, not this file.
+//
+// Every other module (contact blocks, footer, pricing panels, stats strips,
+// achievements, milestones, services tabs) must import from here instead of
+// hardcoding its own copy — that duplication was the root cause of the
+// contact info / pricing / stats numbers drifting out of sync across pages.
 
-export type LeadPayload = Record<string, string | boolean>;
-
-export async function submitLead(kind: "demo_request" | "contact_message", payload: LeadPayload) {
-  const [{ addDoc, collection, serverTimestamp }, { db }] = await Promise.all([
-    import("firebase/firestore/lite"),
-    import("../../../firebase/firebase_config.js"),
-  ]);
-  await addDoc(collection(db, "website_leads"), {
-    ...payload,
-    kind,
-    source: "system-partners-website",
-    createdAt: serverTimestamp(),
-  });
-}
-
-// ── TYPES ──────────────────────────────────────────────────────────────
-export type PageId =
-  | "home" | "background" | "who-we-are" | "achievements"
-  | "services-dev" | "services-system" | "services-training" | "services-rd"
-  | "product-ihmis" | "product-erp" | "product-ai"
-  | "resources-demo" | "resources-downloads" | "contact" | "live-demo" | "admin";
-
-export type ServiceTabId = "services-dev" | "services-system" | "services-training" | "services-rd";
-export type Nav = (page: PageId) => void;
-
-export const PAGE_TITLES: Record<PageId, string> = {
-  home: "System Partners Limited | Funsoft I-HMIS",
-  background: "Our Background | System Partners Limited",
-  "who-we-are": "Who We Are | System Partners Limited",
-  achievements: "Our Achievements | System Partners Limited",
-  "services-dev": "Software Development Services | System Partners Limited",
-  "services-system": "System Integration Services | System Partners Limited",
-  "services-training": "Training & Capacity Building | System Partners Limited",
-  "services-rd": "Healthcare Research & Development | System Partners Limited",
-  "product-ihmis": "Funsoft I-HMIS | System Partners Limited",
-  "product-erp": "Funsoft ERP | System Partners Limited",
-  "product-ai": "Funsoft Healthcare AI | System Partners Limited",
-  "resources-demo": "Request a Product Demo | System Partners Limited",
-  "resources-downloads": "Product Resources | System Partners Limited",
-  contact: "Contact System Partners Limited",
-  "live-demo": "Live Demo | Funsoft I-HMIS",
-  admin: "Admin | System Partners Limited",
+export type ContactInfo = {
+  addressLines: string[];
+  phones: string[];
+  email: string;
+  hours: string;
+  facebookUrl: string;
+  facebookHandle: string;
+  twitterUrl: string;
+  instagramUrl: string;
+  linkedinUrl: string;
 };
 
-export const PAGE_IDS = new Set<PageId>(Object.keys(PAGE_TITLES) as PageId[]);
+export const DEFAULT_CONTACT: ContactInfo = {
+  addressLines: ["Westlands Business Park, 4th Floor, Chiromo Lane", "Nairobi, Kenya"],
+  phones: ["+254 20 7857779", "+254 20 7855355", "+254 714 433693"],
+  email: "info@systempartners.biz",
+  hours: "Mon – Fri, 8:00 AM – 5:00 PM",
+  facebookUrl: "https://facebook.com/funsofthmis",
+  facebookHandle: "funsofthmis",
+  twitterUrl: "https://twitter.com/funsofthealth",
+  instagramUrl: "https://instagram.com/funsofthealth",
+  linkedinUrl: "https://ke.linkedin.com/company/system-partners-ltd",
+};
 
-export function pageFromLocation(): PageId {
-  const candidate = window.location.hash.replace(/^#\/?/, "") as PageId;
-  return PAGE_IDS.has(candidate) ? candidate : "home";
-}
+export type PricingPlan = { plan: string; price: string; beds: string; featured?: boolean };
 
-export interface NavLeaf { label: string; page: PageId; icon?: ComponentType<{ className?: string }> }
-export interface NavEntry {
-  label: string; page?: PageId;
-  icon?: ComponentType<{ className?: string }>;
-  children?: NavLeaf[];
-}
+export const DEFAULT_PRICING: { plans: PricingPlan[]; disclaimer: string } = {
+  plans: [
+    { plan: "Starter", price: "$3,999", beds: "Outpatient · 0–50 beds" },
+    { plan: "Standard", price: "$5,999", beds: "Outpatient · 0–50 beds", featured: true },
+    { plan: "Advanced", price: "$8,999", beds: "51–100 beds" },
+  ],
+  disclaimer: "Subject to 16% VAT. Training and support are charged at an additional 50%.",
+};
 
-// ── SERVICE TABS ────────────────────────────────────────────────────────
-export const SERVICE_TABS: {
-  id: ServiceTabId; label: string;
-  icon: ComponentType<{ className?: string }>;
-  imageId: string; crop: string; tagline: string;
-  services: { title: string; desc: string }[];
-}[] = [
-  {
-    id: "services-dev", label: "Development", icon: Code2,
-    imageId: "1522071820081-009f0129c71c", crop: "faces",
+export type StatItem = { value: string; label: string };
+
+export const DEFAULT_STATS: StatItem[] = [
+  { value: "500+", label: "Happy Clients" },
+  { value: "20+", label: "Years of Experience" },
+  { value: "99.8%", label: "System Uptime" },
+  { value: "100+", label: "Systems Implemented" },
+];
+
+export type TrustedByEntry = { name: string; since: string };
+
+export const DEFAULT_TRUSTED_BY: TrustedByEntry[] = [
+  { name: "Jaramogi Oginga Odinga Teaching & Referral Hospital", since: "Since 2010" },
+  { name: "Nanyuki Teaching and Referral Hospital", since: "Since 2010" },
+  { name: "Siaya County Referral Hospital", since: "Since 2018" },
+  { name: "Moi Teaching & Referral Hospital", since: "Since 2007" },
+  { name: "Pumwani Maternity Hospital", since: "Since 2011" },
+];
+
+export type Milestone = { src: string; year: string; title: string; body: string };
+
+export const DEFAULT_MILESTONES: Milestone[] = [
+  { src: "/assets/history/minister-handover-moi-hospital.jpg", year: "2007–2011", title: "Ministry recognition", body: "Certificate of acquisition presented for Funsoft I-HMIS at Moi Teaching & Referral Hospital." },
+  { src: "/assets/history/pumwani-handover-2011.jpg", year: "2011", title: "Pumwani handover", body: "System handover ceremony with Ministry and hospital officials at Pumwani Maternity Hospital, Nairobi." },
+  { src: "/assets/history/afhad-training-sudan-2007.jpg", year: "2007", title: "Regional reach", body: "SPL staff delivering Funsoft I-HMIS training at AFHAD University for Women, Khartoum, Sudan." },
+];
+
+export type Testimonial = { name: string; role: string; org: string; year: string; quote: string };
+
+export const DEFAULT_TESTIMONIALS: Testimonial[] = [];
+
+export type ServiceItem = { title: string; desc: string };
+export type ServiceTabContent = { tagline: string; services: ServiceItem[] };
+
+export const DEFAULT_SERVICE_CONTENT: Record<
+  "services-dev" | "services-system" | "services-training" | "services-rd",
+  ServiceTabContent
+> = {
+  "services-dev": {
     tagline: "Full-cycle software development — from analysis and design through to deployment and beyond",
     services: [
       { title: "Software Engineering / System Programming", desc: "End-to-end enterprise software development using industry-standard methodologies and rigorous quality assurance." },
@@ -82,9 +96,7 @@ export const SERVICE_TABS: {
       { title: "HTML / Web Front-end", desc: "Standards-compliant web markup for browser-based healthcare portals and dashboards." },
     ],
   },
-  {
-    id: "services-system", label: "System Based", icon: Server,
-    imageId: "1629904853716-f0bc54eea481", crop: "entropy",
+  "services-system": {
     tagline: "End-to-end system lifecycle management — integration, security, and SLA-backed support",
     services: [
       { title: "System Development Services", desc: "Custom-built healthcare systems designed around your facility's specific workflows, scale, and regulatory requirements." },
@@ -95,9 +107,7 @@ export const SERVICE_TABS: {
       { title: "System Maintenance Services", desc: "SLA-backed maintenance covering patches, version updates, monitoring, and priority issue resolution." },
     ],
   },
-  {
-    id: "services-training", label: "Training & Capacity", icon: GraduationCap,
-    imageId: "1639945314262-0592de4f92c8", crop: "faces",
+  "services-training": {
     tagline: "Hands-on technical training delivered by practising software engineers with real-world deployment experience",
     services: [
       { title: "Java Application Development", desc: "Core Java, Spring Boot, and enterprise Java — from fundamentals to production-ready healthcare systems." },
@@ -112,9 +122,7 @@ export const SERVICE_TABS: {
       { title: "XML Scripting", desc: "Data exchange, configuration management, and HL7 data formats using XML standards." },
     ],
   },
-  {
-    id: "services-rd", label: "Research & Development", icon: Microscope,
-    imageId: "1666214277657-e60f05c40b04", crop: "faces",
+  "services-rd": {
     tagline: "Continuous investment in healthcare AI and next-generation I-HMIS capabilities",
     services: [
       { title: "Funsoft Healthcare AI Development", desc: "Building the next generation of clinical decision support, predictive analytics, and AI-powered health data insights." },
@@ -125,4 +133,4 @@ export const SERVICE_TABS: {
       { title: "Security & Compliance Research", desc: "Proactive research into emerging security threats, health data regulations, and compliance frameworks across East Africa." },
     ],
   },
-];
+};

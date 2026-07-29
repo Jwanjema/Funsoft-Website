@@ -11,6 +11,7 @@ import { Img } from "./components/Img";
 import { TechLogoRow } from "./components/TechLogos";
 import { VideoLightbox } from "./components/VideoLightbox";
 import { submitLead, SERVICE_TABS, type Nav, type ServiceTabId } from "./shared";
+import { useSiteContent } from "./content/useSiteContent";
 
 function FacebookMark({ className = "" }: { className?: string }) {
   return (
@@ -44,22 +45,22 @@ function CtaCard({ nav }: { nav: Nav }) {
 }
 
 function CompactContact() {
+  const contact = useSiteContent("contact");
   return (
     <Reveal delay={0.1} className="h-full rounded-[20px] bg-card border border-border/80 p-6 shadow-[0_18px_45px_rgba(21,88,192,0.07)]">
       <div className="text-[10px] font-bold tracking-[0.18em] uppercase text-primary mb-3" style={{ fontFamily: "'Inter',sans-serif" }}>Talk to our team</div>
       <h3 className="font-extrabold text-[20px] leading-[1.15] text-foreground mb-5">Contact</h3>
       <div className="space-y-3" style={{ fontFamily: "'Inter',sans-serif" }}>
-        <a href="tel:+254207857779" className="flex items-center gap-3 text-[15px] font-medium text-foreground hover:text-primary transition-colors">
-          <Phone className="w-4 h-4 text-primary/60 flex-none" />+254 20 7857779
-        </a>
-        <a href="tel:+254714433693" className="flex items-center gap-3 text-[15px] font-medium text-foreground hover:text-primary transition-colors">
-          <Phone className="w-4 h-4 text-primary/60 flex-none" />+254 714 433693
-        </a>
-        <a href="mailto:info@systempartners.biz" className="flex items-center gap-3 text-[15px] font-medium text-foreground hover:text-primary transition-colors break-all">
-          <Mail className="w-4 h-4 text-primary/60 flex-none" />info@systempartners.biz
+        {contact.phones.map(phone => (
+          <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="flex items-center gap-3 text-[15px] font-medium text-foreground hover:text-primary transition-colors">
+            <Phone className="w-4 h-4 text-primary/60 flex-none" />{phone}
+          </a>
+        ))}
+        <a href={`mailto:${contact.email}`} className="flex items-center gap-3 text-[15px] font-medium text-foreground hover:text-primary transition-colors break-all">
+          <Mail className="w-4 h-4 text-primary/60 flex-none" />{contact.email}
         </a>
         <div className="flex items-center gap-3 text-[14px] text-muted-foreground pt-1">
-          <Clock className="w-4 h-4 text-primary/60 flex-none" />Mon – Fri, 8:00 AM – 5:00 PM
+          <Clock className="w-4 h-4 text-primary/60 flex-none" />{contact.hours}
         </div>
       </div>
     </Reveal>
@@ -69,11 +70,8 @@ function CompactContact() {
 // ── SUBPAGE SHELL ───────────────────────────────────────────────────────
 // heroImageId: Unsplash photo ID. Left col scrolls; right col is overflow-hidden (no double scroll).
 function PricingSupportPanel({ nav }: { nav: Nav }) {
-  const plans = [
-    { plan: "Starter", price: "$3,999", beds: "Outpatient · 0–50 beds" },
-    { plan: "Standard", price: "$5,999", beds: "Outpatient · 0–50 beds", featured: true },
-    { plan: "Advanced", price: "$8,999", beds: "51–100 beds" },
-  ];
+  const { plans, disclaimer } = useSiteContent("pricing");
+  const contact = useSiteContent("contact");
 
   return (
     <Reveal className="overflow-hidden rounded-[24px] bg-[#0B2B58] text-white shadow-[0_24px_70px_rgba(7,29,69,0.2)]">
@@ -94,7 +92,7 @@ function PricingSupportPanel({ nav }: { nav: Nav }) {
             ))}
           </StaggerGroup>
           <p className="text-[11px] text-blue-100/60 mt-4 leading-relaxed" style={{ fontFamily: "'Inter',sans-serif" }}>
-            Subject to 16% VAT. Training and support are charged at an additional 50%.
+            {disclaimer}
           </p>
         </div>
 
@@ -109,10 +107,11 @@ function PricingSupportPanel({ nav }: { nav: Nav }) {
             Request a demo
           </button>
           <div className="mt-auto pt-5 border-t border-white/10 space-y-3" style={{ fontFamily: "'Inter',sans-serif" }}>
-            <a href="tel:+254207857779" className="flex items-center gap-3 text-[14px] text-white hover:text-blue-200 transition-colors"><Phone className="w-4 h-4 text-blue-300" />+254 20 7857779</a>
-            <a href="tel:+254714433693" className="flex items-center gap-3 text-[14px] text-white hover:text-blue-200 transition-colors"><Phone className="w-4 h-4 text-blue-300" />+254 714 433693</a>
-            <a href="mailto:info@systempartners.biz" className="flex items-center gap-3 text-[14px] text-white hover:text-blue-200 transition-colors break-all"><Mail className="w-4 h-4 text-blue-300" />info@systempartners.biz</a>
-            <div className="flex items-center gap-3 text-[13px] text-blue-100/60"><Clock className="w-4 h-4 text-blue-300" />Mon – Fri, 8:00 AM – 5:00 PM</div>
+            {contact.phones.map(phone => (
+              <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`} className="flex items-center gap-3 text-[14px] text-white hover:text-blue-200 transition-colors"><Phone className="w-4 h-4 text-blue-300" />{phone}</a>
+            ))}
+            <a href={`mailto:${contact.email}`} className="flex items-center gap-3 text-[14px] text-white hover:text-blue-200 transition-colors break-all"><Mail className="w-4 h-4 text-blue-300" />{contact.email}</a>
+            <div className="flex items-center gap-3 text-[13px] text-blue-100/60"><Clock className="w-4 h-4 text-blue-300" />{contact.hours}</div>
           </div>
         </div>
       </div>
@@ -172,6 +171,7 @@ function SubPage({
 
 // ── PAGE: BACKGROUND ────────────────────────────────────────────────────
 export function PageBackground({ nav }: { nav: Nav }) {
+  const { items: milestones } = useSiteContent("milestones");
   return (
     <SubPage breadcrumb="About Us / Our Background" title="Our Background"
       heroImageId="1611348524140-53c9a25263d6" heroImageCrop="entropy"
@@ -217,11 +217,7 @@ export function PageBackground({ nav }: { nav: Nav }) {
         <div>
           <h3 className="font-bold text-[16px] text-foreground mb-4">Milestones Along the Way</h3>
           <StaggerGroup className="grid grid-cols-1 sm:grid-cols-3 gap-4" stagger={0.08}>
-            {[
-              { src: "/assets/history/minister-handover-moi-hospital.jpg", year: "2007–2011", title: "Ministry recognition", body: "Certificate of acquisition presented for Funsoft I-HMIS at Moi Teaching & Referral Hospital." },
-              { src: "/assets/history/pumwani-handover-2011.jpg", year: "2011", title: "Pumwani handover", body: "System handover ceremony with Ministry and hospital officials at Pumwani Maternity Hospital, Nairobi." },
-              { src: "/assets/history/afhad-training-sudan-2007.jpg", year: "2007", title: "Regional reach", body: "SPL staff delivering Funsoft I-HMIS training at AFHAD University for Women, Khartoum, Sudan." },
-            ].map(({ src, year, title, body }) => (
+            {milestones.map(({ src, year, title, body }) => (
               <StaggerItem key={src} className="bg-card rounded-xl border border-border overflow-hidden hover:border-primary/30 hover:shadow-sm transition-all">
                 <img src={src} alt={title} className="w-full aspect-[4/3] object-cover" loading="lazy" />
                 <div className="p-4">
@@ -291,19 +287,25 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
   const [direction, setDirection] = useState(0);
   const reduce = useReducedMotion();
 
+  useEffect(() => {
+    if (index > testimonials.length - 1) setIndex(0);
+  }, [testimonials.length, index]);
+
   const go = (next: number) => {
+    if (testimonials.length === 0) return;
     setDirection(next > index || (index === testimonials.length - 1 && next === 0) ? 1 : -1);
     setIndex((next + testimonials.length) % testimonials.length);
   };
 
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || testimonials.length <= 1) return;
     const timer = setInterval(() => go(index + 1), 7000);
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, reduce]);
+  }, [index, reduce, testimonials.length]);
 
   const t = testimonials[index];
+  if (!t) return null;
 
   return (
     <Reveal className="relative bg-card rounded-xl border border-border p-6 sm:p-7 overflow-hidden">
@@ -364,14 +366,12 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
 }
 
 // ── PAGE: ACHIEVEMENTS ──────────────────────────────────────────────────
+const STAT_ICONS = [Activity, Award, Users, Star] as const;
+
 export function PageAchievements({ nav }: { nav: Nav }) {
-  const trustedBy = [
-    { name: "Jaramogi Oginga Odinga Teaching & Referral Hospital", since: "Since 2010" },
-    { name: "Nanyuki Teaching and Referral Hospital", since: "Since 2010" },
-    { name: "Siaya County Referral Hospital", since: "Since 2018" },
-    { name: "Moi Teaching & Referral Hospital", since: "Since 2007" },
-    { name: "Pumwani Maternity Hospital", since: "Since 2011" },
-  ];
+  const { items: stats } = useSiteContent("stats");
+  const { items: trustedBy } = useSiteContent("trustedBy");
+  const { items: testimonials } = useSiteContent("testimonials");
   return (
     <SubPage breadcrumb="About Us / Our Achievements" title="Our Achievements"
       heroImageId="1720700126957-769e2f2fc0fc" heroImageCrop="faces"
@@ -379,20 +379,19 @@ export function PageAchievements({ nav }: { nav: Nav }) {
       sidebar={<><CtaCard nav={nav} /><CompactContact /></>}>
       <div className="space-y-6">
         <StaggerGroup className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {[
-            { value: "100+", label: "Systems Implemented", icon: Activity },
-            { value: "20+", label: "Years of Experience", icon: Award },
-            { value: "500+", label: "Happy Clients", icon: Users },
-          ].map(({ value, label, icon: Icon }) => (
-            <StaggerItem key={label} className="bg-card rounded-xl border border-border p-5 text-center hover:shadow-sm transition-shadow">
-              <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-3">
-                <Icon className="w-4 h-4 text-primary" />
-              </div>
-              <div className="text-3xl font-extrabold text-primary mb-0.5"><CountUp value={value} /></div>
-              <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider"
-                style={{ fontFamily: "'Inter',sans-serif" }}>{label}</div>
-            </StaggerItem>
-          ))}
+          {stats.map(({ value, label }, i) => {
+            const Icon = STAT_ICONS[i % STAT_ICONS.length];
+            return (
+              <StaggerItem key={label} className="bg-card rounded-xl border border-border p-5 text-center hover:shadow-sm transition-shadow">
+                <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-3">
+                  <Icon className="w-4 h-4 text-primary" />
+                </div>
+                <div className="text-3xl font-extrabold text-primary mb-0.5"><CountUp value={value} /></div>
+                <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider"
+                  style={{ fontFamily: "'Inter',sans-serif" }}>{label}</div>
+              </StaggerItem>
+            );
+          })}
         </StaggerGroup>
 
         <div>
@@ -412,6 +411,13 @@ export function PageAchievements({ nav }: { nav: Nav }) {
             ))}
           </StaggerGroup>
         </div>
+
+        {testimonials.length > 0 && (
+          <div>
+            <h3 className="font-bold text-[17px] text-foreground mb-4">What Our Clients Say</h3>
+            <TestimonialCarousel testimonials={testimonials} />
+          </div>
+        )}
       </div>
     </SubPage>
   );
@@ -419,7 +425,9 @@ export function PageAchievements({ nav }: { nav: Nav }) {
 
 // ── PAGE: SERVICES (tabbed, single scroll) ──────────────────────────────
 export function PageServices({ activeTab, nav }: { activeTab: ServiceTabId; nav: Nav }) {
-  const tab = SERVICE_TABS.find(t => t.id === activeTab)!;
+  const tabMeta = SERVICE_TABS.find(t => t.id === activeTab)!;
+  const { tagline, services } = useSiteContent(activeTab);
+  const tab = { ...tabMeta, tagline, services };
   return (
     <div className="min-h-full flex flex-col">
       {/* Left: tabs + scrollable content */}
@@ -899,6 +907,7 @@ export function PageLiveDemo() {
 
 // ── PAGE: CONTACT (full-bleed split panel) ──────────────────────────────
 export function PageContact() {
+  const contact = useSiteContent("contact");
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "", subscribe: false });
   const [website, setWebsite] = useState("");
   const [done, setDone] = useState(false);
@@ -919,7 +928,7 @@ export function PageContact() {
       setForm({ name: "", email: "", subject: "", message: "", subscribe: false });
     } catch (submissionError) {
       console.error("Contact submission failed", submissionError);
-      setError("We couldn't send your message. Please email info@systempartners.biz or try again.");
+      setError(`We couldn't send your message. Please email ${contact.email} or try again.`);
     } finally {
       setSubmitting(false);
     }
@@ -941,10 +950,10 @@ export function PageContact() {
           </p>
           <div className="space-y-3.5">
             {[
-              { icon: MapPin, text: "Westlands Business Park, 4th Floor, Chiromo Lane, Nairobi, Kenya" },
-              { icon: Phone, text: "+254 20 7857779 / +254 20 7855355 / +254 714 433693" },
-              { icon: Mail, text: "info@systempartners.biz" },
-              { icon: Clock, text: "Monday – Friday, 8:00 AM – 5:00 PM" },
+              { icon: MapPin, text: contact.addressLines.join(", ") },
+              { icon: Phone, text: contact.phones.join(" / ") },
+              { icon: Mail, text: contact.email },
+              { icon: Clock, text: contact.hours },
             ].map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-start gap-3" style={{ fontFamily: "'Inter',sans-serif" }}>
                 <Icon className="w-4 h-4 text-blue-300 flex-none mt-0.5" />
@@ -953,10 +962,10 @@ export function PageContact() {
             ))}
           </div>
           <div className="flex items-center gap-2 mt-8">
-            <a href="https://facebook.com/funsofthmis" target="_blank" rel="noopener noreferrer"
+            <a href={contact.facebookUrl} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-white/12 hover:bg-white/20 border border-white/20 text-white text-[13px] font-semibold px-3 py-2 rounded-lg transition-colors"
               style={{ fontFamily: "'Inter',sans-serif" }}>
-              <FacebookMark className="w-3.5 h-3.5" />funsofthmis
+              <FacebookMark className="w-3.5 h-3.5" />{contact.facebookHandle}
             </a>
           </div>
         </div>

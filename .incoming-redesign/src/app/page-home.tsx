@@ -5,19 +5,17 @@ import {
 import { CountUp } from "./components/motion";
 import { Img } from "./components/Img";
 import type { Nav } from "./shared";
+import { useSiteContent } from "./content/useSiteContent";
 
 // ── PAGE: HOME ──────────────────────────────────────────────────────────
 export function PageHome({ nav }: { nav: Nav }) {
+  const { items: stats } = useSiteContent("stats");
+  const { plans: pricingPlans } = useSiteContent("pricing");
   const features = [
     { icon: Activity, label: "Real-time Patient Monitoring" },
     { icon: BarChart3, label: "Health Analytics & Reporting" },
     { icon: Brain, label: "Funsoft Healthcare AI" },
     { icon: Shield, label: "MOH Approved EMR / HIS" },
-  ];
-  const stats = [
-    { value: "500+", label: "Happy Clients" },
-    { value: "99.8%", label: "System Uptime" },
-    { value: "20+", label: "Years of Excellence" },
   ];
   const reduce = useReducedMotion();
   const easeOut = [0.16, 1, 0.3, 1] as const;
@@ -60,7 +58,7 @@ export function PageHome({ nav }: { nav: Nav }) {
             </button>
           </motion.div>
           <motion.div variants={item} className="home-responsive-stats grid grid-cols-3 gap-2 sm:gap-12 sm:flex sm:items-center">
-            {stats.map(({ value, label }) => (
+            {stats.slice(0, 3).map(({ value, label }) => (
               <div key={label} className="min-w-0">
                 <div className="text-[22px] sm:text-[34px] font-extrabold text-primary leading-none mb-1 tabular-nums">
                   <CountUp value={value} />
@@ -125,12 +123,12 @@ export function PageHome({ nav }: { nav: Nav }) {
             animate={reduce ? undefined : "show"}
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.75 } } }}
             className="flex gap-2 mb-4">
-            {[{ p: "Starter", v: "$3,999" }, { p: "Standard", v: "$5,999" }, { p: "Advanced", v: "$8,999" }].map(({ p, v }) => (
-              <motion.div key={p} variants={item}
+            {pricingPlans.map(({ plan, price }) => (
+              <motion.div key={plan} variants={item}
                 className="flex-1 bg-white/12 backdrop-blur-sm border border-white/15 rounded-lg px-2 py-2 text-center hover:bg-white/18 hover:-translate-y-0.5 transition-all duration-200">
                 <div className="text-[9px] text-blue-300 font-bold uppercase tracking-widest mb-0.5"
-                  style={{ fontFamily: "'Inter',sans-serif" }}>{p}</div>
-                <div className="text-[18px] font-extrabold text-white leading-none">{v}</div>
+                  style={{ fontFamily: "'Inter',sans-serif" }}>{plan}</div>
+                <div className="text-[18px] font-extrabold text-white leading-none">{price}</div>
               </motion.div>
             ))}
           </motion.div>
