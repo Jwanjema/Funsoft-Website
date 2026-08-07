@@ -872,7 +872,14 @@ export function PageResourcesDownloads({ nav }: { nav: Nav }) {
 }
 
 // ── PAGE: LIVE DEMO (embedded, full-bleed) ──────────────────────────────
+// funsoft.systempartners.biz sends `X-Frame-Options: SAMEORIGIN`, which blocks
+// browsers from framing it on any other origin — that's enforced client-side and
+// can't be worked around in this app's own code. The iframe below loads through a
+// same-purpose reverse proxy (see /demo-proxy) that strips that header server-side;
+// swap PROXY_DEMO_URL for the deployed Worker URL once it's live. The "Open in new
+// tab" link always points at the real funsoft URL regardless of proxy status.
 const LIVE_DEMO_URL = "https://funsoft.systempartners.biz/funsofthmis/";
+const PROXY_DEMO_URL = "https://funsoft-demo-proxy.demo-proxy.workers.dev/funsofthmis/";
 
 export function PageLiveDemo() {
   const [loaded, setLoaded] = useState(false);
@@ -895,7 +902,7 @@ export function PageLiveDemo() {
           </div>
         )}
         <iframe
-          src={LIVE_DEMO_URL}
+          src={PROXY_DEMO_URL}
           title="Funsoft I-HMIS live demo"
           className="w-full h-full border-0"
           onLoad={() => setLoaded(true)}

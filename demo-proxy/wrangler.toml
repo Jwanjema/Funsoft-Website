@@ -1,0 +1,10 @@
+name = "funsoft-demo-proxy"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# Deploy: npx wrangler deploy
+# Default URL after deploy: https://funsoft-demo-proxy.<your-subdomain>.workers.dev
+#
+# Optional: map a custom subdomain (e.g. demo-proxy.systempartners.biz) via
+# Cloudflare Dashboard > Workers & Pages > funsoft-demo-proxy > Triggers > Custom Domains.
+# Requires the domain's DNS to be on Cloudflare.
