@@ -8,7 +8,7 @@ import { SITE_CONTENT_COLLECTION, type SiteContentKey, type SiteContentMap } fro
 export async function saveSiteContent<K extends SiteContentKey>(key: K, value: SiteContentMap[K]) {
   const [{ doc, setDoc }, { db }] = await Promise.all([
     import("firebase/firestore/lite"),
-    import("../../../../firebase/firebase_config.js"),
+    import("../../firebase/firebase_config.js"),
   ]);
   await setDoc(doc(db, SITE_CONTENT_COLLECTION, key), value as Record<string, unknown>);
 }
@@ -19,7 +19,7 @@ export async function loadSiteContent<K extends SiteContentKey>(
 ): Promise<SiteContentMap[K]> {
   const [{ doc, getDoc }, { db }] = await Promise.all([
     import("firebase/firestore/lite"),
-    import("../../../../firebase/firebase_config.js"),
+    import("../../firebase/firebase_config.js"),
   ]);
   const snap = await getDoc(doc(db, SITE_CONTENT_COLLECTION, key));
   return snap.exists() ? (snap.data() as SiteContentMap[K]) : fallback;

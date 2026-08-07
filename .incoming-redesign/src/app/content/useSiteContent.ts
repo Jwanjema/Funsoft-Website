@@ -52,7 +52,7 @@ export function useSiteContent<K extends SiteContentKey>(key: K): SiteContentMap
       try {
         const [{ doc, getDoc }, { db }] = await Promise.all([
           import("firebase/firestore/lite"),
-          import("../../../../firebase/firebase_config.js"),
+          import("../../firebase/firebase_config.js"),
         ]);
         const snap = await getDoc(doc(db, SITE_CONTENT_COLLECTION, key));
         if (!cancelled && snap.exists()) {

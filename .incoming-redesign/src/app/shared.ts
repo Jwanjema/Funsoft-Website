@@ -5,7 +5,7 @@ export type LeadPayload = Record<string, string | boolean>;
 export async function submitLead(kind: "demo_request" | "contact_message", payload: LeadPayload) {
   const [{ addDoc, collection, serverTimestamp }, { db }] = await Promise.all([
     import("firebase/firestore/lite"),
-    import("../../../firebase/firebase_config.js"),
+    import("../firebase/firebase_config.js"),
   ]);
   await addDoc(collection(db, "website_leads"), {
     ...payload,

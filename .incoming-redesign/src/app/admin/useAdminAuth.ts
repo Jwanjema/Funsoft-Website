@@ -20,7 +20,7 @@ export function useAdminAuth(): AdminAuthState {
     (async () => {
       const [{ onAuthStateChanged }, { authentication }] = await Promise.all([
         import("firebase/auth"),
-        import("../../../../firebase/firebase_config.js"),
+        import("../../firebase/firebase_config.js"),
       ]);
       unsubscribe = onAuthStateChanged(authentication, (user) => {
         setState(user ? { status: "signed-in", email: user.email } : { status: "signed-out", email: null });
@@ -35,7 +35,7 @@ export function useAdminAuth(): AdminAuthState {
 export async function signInWithEmail(email: string, password: string) {
   const [{ signInWithEmailAndPassword }, { authentication }] = await Promise.all([
     import("firebase/auth"),
-    import("../../../../firebase/firebase_config.js"),
+    import("../../firebase/firebase_config.js"),
   ]);
   await signInWithEmailAndPassword(authentication, email, password);
 }
@@ -43,7 +43,7 @@ export async function signInWithEmail(email: string, password: string) {
 export async function signInWithGoogle() {
   const [{ signInWithPopup }, { authentication, googleProvider }] = await Promise.all([
     import("firebase/auth"),
-    import("../../../../firebase/firebase_config.js"),
+    import("../../firebase/firebase_config.js"),
   ]);
   await signInWithPopup(authentication, googleProvider);
 }
@@ -51,7 +51,7 @@ export async function signInWithGoogle() {
 export async function signOutAdmin() {
   const [{ signOut }, { authentication }] = await Promise.all([
     import("firebase/auth"),
-    import("../../../../firebase/firebase_config.js"),
+    import("../../firebase/firebase_config.js"),
   ]);
   await signOut(authentication);
 }
