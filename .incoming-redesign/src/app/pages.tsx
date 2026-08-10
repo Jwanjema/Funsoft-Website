@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
 import {
   Activity, Shield, Database, Users, ChevronRight, ChevronLeft,
@@ -881,8 +881,31 @@ export function PageResourcesDownloads({ nav }: { nav: Nav }) {
 const LIVE_DEMO_URL = "https://funsoft.systempartners.biz/funsofthmis/";
 const PROXY_DEMO_URL = "https://funsoft-demo-proxy.demo-proxy.workers.dev/funsofthmis/";
 
+// Webswing streams the demo at a fixed virtual screen size — the app inside the
+// iframe is laid out for this resolution, so the iframe itself must stay exactly
+// this size. On viewports smaller than that, the whole box is scaled down (not
+// resized) via CSS transform so the app still sees a real 1280×1024 canvas.
+const DEMO_WIDTH = 1280;
+const DEMO_HEIGHT = 1024;
+
 export function PageLiveDemo() {
   const [loaded, setLoaded] = useState(false);
+  const [scale, setScale] = useState(1);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const updateScale = () => {
+      const { width, height } = el.getBoundingClientRect();
+      setScale(Math.min(width / DEMO_WIDTH, height / DEMO_HEIGHT, 1));
+    };
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex-none flex items-center justify-between gap-3 px-5 sm:px-8 py-3 border-b border-border bg-card">
@@ -895,7 +918,7 @@ export function PageLiveDemo() {
           Open in new tab<ExternalLink className="w-3.5 h-3.5" />
         </a>
       </div>
-      <div className="flex-1 min-h-0 relative bg-secondary/30">
+      <div ref={containerRef} className="flex-1 min-h-0 relative bg-secondary/30 flex items-center justify-center overflow-hidden">
         {!loaded && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-6 h-6 rounded-full border-2 border-primary/25 border-t-primary animate-spin" />
@@ -904,7 +927,12 @@ export function PageLiveDemo() {
         <iframe
           src={PROXY_DEMO_URL}
           title="Funsoft I-HMIS live demo"
-          className="w-full h-full border-0"
+          className="border-0 flex-none"
+          style={{
+            width: DEMO_WIDTH,
+            height: DEMO_HEIGHT,
+            transform: `scale(${scale})`,
+          }}
           onLoad={() => setLoaded(true)}
         />
       </div>
