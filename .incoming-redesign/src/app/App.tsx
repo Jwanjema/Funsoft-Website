@@ -151,9 +151,9 @@ function MainNav({ nav, current }: { nav: Nav; current: PageId }) {
         <button onClick={() => nav("home")} className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 lg:flex-none">
           <img src="/funsoft-logo.png" alt="Funsoft logo" className="w-9 h-9 sm:w-10 sm:h-10 flex-none" width={40} height={40} />
           <div className="leading-none text-left min-w-0">
-            <div className="font-extrabold text-[13px] sm:text-[15px] text-foreground tracking-tight truncate">System Partners</div>
+            <div className="font-extrabold text-[13px] sm:text-[15px] text-foreground tracking-tight truncate">System Partners Limited</div>
             <div className="text-[8px] sm:text-[9px] font-bold text-primary tracking-[0.14em] sm:tracking-[0.22em] uppercase mt-0.5 truncate"
-              style={{ fontFamily: "'Inter',sans-serif" }}>Funsoft® I-HMIS · Limited</div>
+              style={{ fontFamily: "'Inter',sans-serif" }}>Funsoft ERP/HMIS</div>
           </div>
         </button>
 
