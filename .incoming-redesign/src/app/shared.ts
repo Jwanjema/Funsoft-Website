@@ -2,6 +2,32 @@ import { Code2, Server, GraduationCap, Microscope, type ComponentType } from "lu
 
 export type LeadPayload = Record<string, string | boolean>;
 
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+async function sendLeadEmail(kind: "demo_request" | "contact_message", payload: LeadPayload) {
+  if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+    console.warn("EmailJS is not configured; skipping email notification for lead.");
+    return;
+  }
+  const { default: emailjs } = await import("@emailjs/browser");
+  const fields = Object.entries(payload)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join("\n");
+  await emailjs.send(
+    EMAILJS_SERVICE_ID,
+    EMAILJS_TEMPLATE_ID,
+    {
+      kind,
+      fields,
+      to_email: "info@systempartners.biz",
+      reply_to: typeof payload.email === "string" ? payload.email : "",
+    },
+    { publicKey: EMAILJS_PUBLIC_KEY }
+  );
+}
+
 export async function submitLead(kind: "demo_request" | "contact_message", payload: LeadPayload) {
   const [{ addDoc, collection, serverTimestamp }, { db }] = await Promise.all([
     import("firebase/firestore/lite"),
@@ -13,6 +39,11 @@ export async function submitLead(kind: "demo_request" | "contact_message", paylo
     source: "system-partners-website",
     createdAt: serverTimestamp(),
   });
+  try {
+    await sendLeadEmail(kind, payload);
+  } catch (emailError) {
+    console.error("Lead email notification failed", emailError);
+  }
 }
 
 // ── TYPES ──────────────────────────────────────────────────────────────
