@@ -2,30 +2,15 @@ import { Code2, Server, GraduationCap, Microscope, type ComponentType } from "lu
 
 export type LeadPayload = Record<string, string | boolean>;
 
-const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-
 async function sendLeadEmail(kind: "demo_request" | "contact_message", payload: LeadPayload) {
-  if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
-    console.warn("EmailJS is not configured; skipping email notification for lead.");
-    return;
+  const response = await fetch("/api/send-lead-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kind, payload }),
+  });
+  if (!response.ok) {
+    throw new Error(`Lead email request failed with status ${response.status}`);
   }
-  const { default: emailjs } = await import("@emailjs/browser");
-  const fields = Object.entries(payload)
-    .map(([key, value]) => `${key}: ${value}`)
-    .join("\n");
-  await emailjs.send(
-    EMAILJS_SERVICE_ID,
-    EMAILJS_TEMPLATE_ID,
-    {
-      kind,
-      fields,
-      to_email: "info@systempartners.biz",
-      reply_to: typeof payload.email === "string" ? payload.email : "",
-    },
-    { publicKey: EMAILJS_PUBLIC_KEY }
-  );
 }
 
 export async function submitLead(kind: "demo_request" | "contact_message", payload: LeadPayload) {
@@ -97,7 +82,7 @@ export const SERVICE_TABS: {
   services: { title: string; desc: string }[];
 }[] = [
   {
-    id: "services-dev", label: "Development", icon: Code2,
+    id: "services-dev", label: "Application Development", icon: Code2,
     imageId: "1522071820081-009f0129c71c", crop: "faces",
     tagline: "Full-cycle software development — from analysis and design through to deployment and beyond",
     services: [
@@ -114,7 +99,7 @@ export const SERVICE_TABS: {
     ],
   },
   {
-    id: "services-system", label: "System Based", icon: Server,
+    id: "services-system", label: "Our Services", icon: Server,
     imageId: "1629904853716-f0bc54eea481", crop: "entropy",
     tagline: "End-to-end system lifecycle management — integration, security, and SLA-backed support",
     services: [

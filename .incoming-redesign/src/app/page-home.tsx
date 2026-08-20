@@ -45,7 +45,7 @@ export function PageHome({ nav }: { nav: Nav }) {
           <motion.p variants={item} className="home-responsive-copy text-[15px] sm:text-[17px] 2xl:text-[19px] leading-relaxed text-muted-foreground max-w-[540px] mb-5 sm:mb-8"
             style={{ fontFamily: "'Inter',sans-serif" }}>
             System Partners Limited delivers the Funsoft® I-HMIS — Kenya&apos;s leading integrated
-            healthcare information platform, trusted by hospitals and health networks across East Africa since 2001.
+            healthcare information platform, trusted by hospitals and health networks across Africa since 2001.
           </motion.p>
           <motion.div variants={item} className="flex flex-wrap gap-3 mb-6 sm:mb-9">
             <button onClick={() => nav("product-ihmis")}
