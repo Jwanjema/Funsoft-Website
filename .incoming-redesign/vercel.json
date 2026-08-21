@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/webmail",
+      "destination": "https://da33.host-ww.net/roundcube/",
+      "permanent": false
+    }
+  ]
+}
